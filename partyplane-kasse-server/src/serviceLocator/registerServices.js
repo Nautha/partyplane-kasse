@@ -3,6 +3,7 @@ const {UserRepository} = require('../users/UserRepository');
 const {UserController} = require('../users/UserController');
 const {RoleRepository} = require('../authentication/database/RoleRepository');
 const {PermissionRepository} = require('../authentication/database/PermissionRepository');
+const {LoginController} = require('../authentication/LoginController');
 
 
 function registerServices(sl) {
@@ -18,6 +19,10 @@ function registerServices(sl) {
 
     //PermissionManagement
     sl.register('PermissionRepository', new PermissionRepository(sl.get('DatabaseController')));
+
+    //LoginController
+    sl.register('LoginController', new LoginController(sl.get('UserRepository')));
+
 }
 
 module.exports = {registerServices};

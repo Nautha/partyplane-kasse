@@ -30,6 +30,7 @@ async function initialization(serviceLocator) {
         role: 'admin',
         email: process.env.INIT_EMAIL || 'admin@example.com',
         hash: await bcrypt.hash(defaultPassword, 10)
+        // hash: defaultPassword
     };
 
     await userRepository.createUser(defaultAdmin);
