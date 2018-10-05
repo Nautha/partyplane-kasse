@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 
 class DatabaseController {
@@ -12,16 +12,20 @@ class DatabaseController {
 
     async _connect() {
         this.connection = await mysql.createConnection({
-           host: this.host,
-           port: this.port,
-           user: this.user,
-           password: this.password,
-           database: this.database
+            host: this.host,
+            port: this.port,
+            user: this.user,
+            password: this.password,
+            database: this.database
         });
     }
 
     async query(query, parameters = []) {
-        return await this._executePreparedStatement(query, parameters);
+        try {
+            return await this._executePreparedStatement(query, parameters);
+        } catch (e) {
+            throw e;
+        }
     }
 
     async _executePreparedStatement(query, parameters = []) {
@@ -31,6 +35,24 @@ class DatabaseController {
         } catch (e) {
             console.log("Error", e);
             throw e;
+        }
+    }
+
+    async doesTableExist() {
+        try {
+            // return await this.connection.query('SELECT count(*) FROM information_schema.TABLES WHERE (TABLE_SCHEMA = \'partyplane-kasse\') AND (TABLE_NAME = \'users\')')
+            return await this.connection.query('SHOW TABLES LIKE \'users\'');
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
+    async createTable(query) {
+        try {
+            return await this.connection.query(query);
+        } catch (e) {
+            throw (e);
         }
     }
 }

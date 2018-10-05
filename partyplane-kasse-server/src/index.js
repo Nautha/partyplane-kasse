@@ -2,10 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// const {routes} = require('./routes');
-// const {errorHandler} = require('./middleware/error');
+const {routes} = require('./routes');
+const {errorHandler} = require('./middleware/error');
 const {ServiceLocator, registerServices} = require('./servicelocator/ServiceLocator');
-// const {initialisation} = require('./initialization');
+const {initialization} = require('./initialization');
 
 
 (async function() {
@@ -14,7 +14,7 @@ const {ServiceLocator, registerServices} = require('./servicelocator/ServiceLoca
 
     await serviceLocator.get('DatabaseController')._connect();
 
-    // await initialisation(serviceLocator);
+    await initialization(serviceLocator);
 
     const app = express();
 
@@ -22,9 +22,9 @@ const {ServiceLocator, registerServices} = require('./servicelocator/ServiceLoca
 
     app.use(bodyParser.json());
     app.use(cors());
-    // routes.forEach(route => app.use(route));
+    routes.forEach(route => app.use(route));
 
-    // app.use(errorHandler);
+    app.use(errorHandler);
     
     app.listen(8080, () => console.log("\x1b[32m%s\x1b[0m", 'Server started'));
 })();
