@@ -9,7 +9,7 @@ function validateBody(schema) {
             return;
         }
 
-        let messages = results.errors.map(error => error.message);
+        let messages = result.errors.map(error => error.message);
 
         res.status(400).json({
            message: 'Missing fields',
