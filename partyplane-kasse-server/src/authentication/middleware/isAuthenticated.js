@@ -8,7 +8,7 @@ function isAuthenticated(authenticationStatus) {
             if(authenticationStatus) {
                 res.status(401).json({
                     message: 'Authentication required',
-                    requiredHeaders: ['Authentization']
+                    requiredHeaders: ['Authorization']
                 });
                 return;
             } else {
@@ -20,7 +20,7 @@ function isAuthenticated(authenticationStatus) {
         const authorizationHeader = req.headers.authorization;
 
         if(!authorizationHeader.startsWith('Bearer ')) {
-            res.json(400).json({
+            res.status(400).json({
                 message: 'Wrong authorization header scheme'
             });
             return;
@@ -30,6 +30,7 @@ function isAuthenticated(authenticationStatus) {
         const result = isJWTValid(token);
 
         if(result.valid === false) {
+
             if(result.error === 'expired') {
                 res.status(401).json({
                     message: 'invalid token',
@@ -52,7 +53,7 @@ function isAuthenticated(authenticationStatus) {
         res.status(403).json({
             message: 'You need to be logged out'
         });
-    }
+    };
 }
 
 function isJWTValid(token) {

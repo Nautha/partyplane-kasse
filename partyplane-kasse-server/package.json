@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r dotenv/config src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc npm run test:all",
+    "test:all": "echo \"Running unit tests\" && mocha --reporter spec -r dotenv/config \"src/**/*.spec.js\""
   },
   "author": "Nautha",
   "license": "MIT",
@@ -19,5 +20,27 @@
     "jsonwebtoken": "^8.2.1",
     "mysql2": "^1.6.1",
     "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "chai-http": "^4.0.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "mocha-sonarqube-reporter": "^1.0.1",
+    "nyc": "^11.8.0",
+    "sinon": "^5.0.7",
+    "sinon-chai": "^3.1.0"
+  },
+  "nyc": {
+    "exclude": [
+      "**/*.spec.js",
+      "**/*.int.js"
+    ],
+    "all": true,
+    "reporter": [
+      "lcovonly",
+      "text"
+    ]
   }
 }
