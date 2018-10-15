@@ -17,6 +17,16 @@ class UserController {
         this.userRepository = userRepository;
     }
 
+    async getUserList() {
+        const users = await this.userRepository.getAllUsers();
+        return users.map(u => ({
+            username: u.username,
+            name: u.name,
+            email: u.email,
+            role: u.role
+        }));
+    }
+
     async createUser(userData) {
         this._verifyPassword(userData);
 
@@ -47,7 +57,7 @@ class UserController {
         ];
 
         const passwordResult = zxcvbn(userData.password, userInput);
-        if(passwordResult < 3) {
+        if(passwordResult.score < 3) {
             throw new PasswordRejectedError(passwordResult);
         }
     }

@@ -29,7 +29,7 @@ const createUserSchema = {
     additionalProperties: false
 };
 
-async function createUser(req, res) {
+async function createUserHandler(req, res) {
     const sl = res.app.locals.serviceLocator;
     const userController = sl.get('UserController');
 
@@ -54,12 +54,26 @@ async function createUser(req, res) {
     }
 }
 
+async function getUserListHandler(req, res) {
+    const sl = res.app.locals.serviceLocator;
+    const userController = sl.get('UserController');
+
+    res.json(await userController.getUserList());
+}
+
 router.post(
     '/users',
     isAuthenticated(true),
     hasPermission('user.create'),
     validateBody(createUserSchema),
-    wa(createUser)
+    wa(createUserHandler)
 );
 
-module.exports = {userRouter: router};
+router.get(
+    '/users',
+    isAuthenticated(true),
+    hasPermission('user.view'),
+    wa(getUserListHandler)
+);
+
+module.exports = {userRouter: router, createUserHandler, getUserListHandler};

@@ -69,8 +69,8 @@ async function createPermissions(sl) {
             description: 'edit a user',
         },
         {
-            permission: 'user.few',
-            description: 'few user list',
+            permission: 'user.view',
+            description: 'view user list',
         },
         {
             permission: 'transaction.add',

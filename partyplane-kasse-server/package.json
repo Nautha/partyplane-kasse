@@ -34,6 +34,9 @@
   },
   "nyc": {
     "exclude": [
+      "src/database/DatabaseController.js",
+      "**/*Repository.js",
+      "src/index.js",
       "**/*.spec.js",
       "**/*.int.js"
     ],

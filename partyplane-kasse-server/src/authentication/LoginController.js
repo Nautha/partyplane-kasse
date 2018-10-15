@@ -14,8 +14,8 @@ class LoginController {
     async login(username, password) {
         const user = await this.userRepository.getUserByUsername(username);
 
-        if(await this._verifyPassword(password, user[0].hash)) {
-            return await LoginController.generateToken(user[0]);
+        if(await this._verifyPassword(password, user.hash)) {
+            return await LoginController.generateToken(user);
         }
         throw new Error('Password wrong');
     }

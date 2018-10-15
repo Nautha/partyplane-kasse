@@ -12,7 +12,7 @@ class UserRepository {
         if(!user) {
             throw new Error('User not found');
         }
-        return user;
+        return user[0];
         } catch (e) {
             console.log(e);
         }
@@ -22,6 +22,16 @@ class UserRepository {
         const query = "INSERT INTO users (username, name, email, hash, role) VALUES (?, ?, ?, ?, ?)";
         const params = [userData.username, userData.name, userData.email, userData.hash, userData.role];
         return await this.DatabaseController.query(query, params);
+    }
+
+    async getAllUsers() {
+        const query = "SELECT * FROM users WHERE visibility = 'visible'";
+        return await this.DatabaseController.query(query);
+    }
+
+    async getDeletedUsers() {
+        const query = "SELECT * FROM users WHERE visibility = 'deleted'";
+        return await this.DatabaseController.query(query);
     }
 }
 
