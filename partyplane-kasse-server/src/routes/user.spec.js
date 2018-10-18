@@ -10,7 +10,7 @@ const {ServiceLocator} = require('../servicelocator/ServiceLocator');
 const {getUserListHandler, createUserHandler} = require('./user');
 // const {LoginController} = require('../authentication/LoginController');
 // const {createUserHandler, getUserListHandler} = require('./user');
-// const {PasswordRejectedError} = require('../users/UserController');
+const {PasswordRejectedError} = require('../users/UserController');
 
 describe('User Router', () => {
     describe('GET /users', () => {
@@ -60,7 +60,7 @@ describe('User Router', () => {
     });
 
     describe('POST /users', () => {
-        it('should create the user when valid data is sent', async () => {
+        it('should relay the transaction information to the controller', async () => {
              const serviceLocator = new ServiceLocator();
 
              const testUser = {
@@ -95,14 +95,18 @@ describe('User Router', () => {
 
              expect(userController.createUser).to.have.been.calledWith(testUser);
              expect(res.json).to.have.been.calledWith(testUserResponse);
+             // console.log('--------------------');
+             // console.log('ERROR MESSAGE:');
+             // console.log(res);
+             // console.log('--------------------');
              // expect(res).to.have.status(200);
-             expect(res).to.be.json;
-             expect(res.body).to.be.deep.equal({
-                 username: 'test',
-                 email: 'test@example.com',
-                 name: 'Test',
-                 role: 'admin'
-             });
+             // expect(res).to.be.json;
+             // expect(res.body).to.be.deep.equal({
+             //     username: 'test',
+             //     email: 'test@example.com',
+             //     name: 'Test',
+             //     role: 'admin'
+             // });
         });
 
         it('should reject unsafe passwords', async () => {
@@ -116,6 +120,40 @@ describe('User Router', () => {
                 password: '12345678'
             };
 
+            const testResponse = {
+                message: 'Password rejected',
+                reason: 'Password does not meet requirements: test'
+            };
+
+            const userController = {
+                createUser: sinon.fake.rejects(new PasswordRejectedError({
+                    feedback: {
+                        warning: 'test'
+                    }
+                }))
+            };
+
+            serviceLocator.register('UserController', userController);
+
+            const req = {
+                body: testUser
+            };
+
+            const res = {
+                app: {locals: {serviceLocator}},
+                status: sinon.fake.returns({json: sinon.fake()}),
+                json: sinon.fake()
+            };
+
+            await createUserHandler(req, res);
+
+            // expect(userController.createUser).to.have.been.calledWith(testUser);
+            // await expect(userController.createUser).to.be.rejectedWith(PasswordRejectedError);
+            // expect(res).to.have.status(400);
+            expect(res.json).to.have.been.calledWith(testResponse);
+        });
+
+        it('should reject duplicate username', async () => {
 
         });
     })
